@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:metas_test/flavour_config.dart';
 import 'package:metas_test/modules/dashboard/apis/character_provider.dart';
 import 'package:metas_test/modules/dashboard/models/character_model.dart';
+import 'package:metas_test/modules/home/provider/home_provider.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -16,9 +18,19 @@ void main() {
 
     await tester.pumpWidget(
       MaterialApp(
-        home: ChangeNotifierProvider(
-          create: (context) =>
-              CharacterProvider(), // Create a simple HomeProvider instance
+        home: MultiProvider(
+          providers: [
+            ChangeNotifierProvider<HomeProvider>(
+              create: (context) => HomeProvider(
+                config: FlavourConfig(
+                    api:
+                        "http://api.duckduckgo.com/?q=simpsons+characters&format=json"),
+              ),
+            ),
+            ChangeNotifierProvider<CharacterProvider>(
+              create: (context) => CharacterProvider(),
+            ),
+          ],
           child: Builder(
             builder: (context) => FloatingActionButton(
               onPressed: () =>
